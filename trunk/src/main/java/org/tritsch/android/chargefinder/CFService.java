@@ -16,6 +16,17 @@
 
 package org.tritsch.android.chargefinder;
 
+import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import junit.framework.Assert;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,70 +36,106 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import android.util.Log;
-import junit.framework.Assert;
-
+/**
+ * <code>CFService</code> implements the chargefinder service.
+ *
+ * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
+ * @version $Id$
+ */
 public class CFService {
-    private static final String TAG = "CFServices";
+    private static final String TAG = "CFService";
     private static final String BASE_URL = "http://chargefinder.tritsch.org/stations.php";
 
-    private static String getString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
- 
-        String line = null;
-        try {
-            while((line = reader.readLine()) != null) { sb.append(line + "\n"); }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        } finally { try { is.close(); } catch(Exception e) { e.printStackTrace(); Assert.fail(); }
-        }
-        return sb.toString();
+    // this is a static class. no instances are allowed.
+    private CFService() {
     }
 
-    public List<Station> lookup(final String point_x, final String point_y, final String radius) {
-        List<Station> stations = new ArrayList<Station>();
+    public static List<CFStation> lookup(final String point_x, final String point_y, final String radius) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: lookup()");
 
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create the list we will return ...");
+        List<CFStation> stations = new ArrayList<CFStation>();
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create http client ...");
         HttpClient httpClient = new DefaultHttpClient();
+	Assert.assertNotNull(httpClient);
+
+	String url = "" + BASE_URL + "?point_x=" + point_x + "&point_y=" + point_y + "&radius=" + radius;
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "URL:" + url);
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "go and do it ...");
         HttpResponse response = null;
         try {
-            String url = "" + BASE_URL + "?point_x=" + point_x + "&point_y=" + point_y + "&radius=" + radius;
             response = httpClient.execute(new HttpGet(url));
             Assert.assertNotNull(response);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
 
-            HttpEntity entity = response.getEntity();
-            Assert.assertNotNull(entity);
-            String resultString = getString(entity.getContent());
-            Assert.assertNotNull(resultString);
-            JSONObject resultObject = new JSONObject(resultString);
-            Assert.assertNotNull(resultObject);
-            JSONArray stationsObject = resultObject.getJSONArray("stations");
-            Assert.assertNotNull(stationsObject);
-            for(int i=0; i<stationsObject.length(); i++) {
-                JSONObject station = stationsObject.getJSONObject(i);
-                Assert.assertNotNull(station);
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "process response ...");
+	JSONArray stationsObject = null;
+        try {
+	    HttpEntity entity = response.getEntity();
+	    Assert.assertNotNull(entity);
 
-                Station newStation = new Station();
-                newStation.name = station.getString("name");
-                newStation.x = station.getDouble("st_x");
-                newStation.y = station.getDouble("st_y");
+	    String resultString = getString(entity.getContent());
+	    Assert.assertNotNull(resultString);
+	    if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Result:" + resultString);
 
-                Assert.assertTrue(stations.add(newStation));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        return stations;
+	    JSONObject resultObject = new JSONObject(resultString);
+	    Assert.assertNotNull(resultObject);
+
+	    stationsObject = resultObject.getJSONArray("stations");
+	    Assert.assertNotNull(stationsObject);
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "build list of stations ...");
+        try {
+	    for(int i=0; i<stationsObject.length(); i++) {
+		JSONObject station = stationsObject.getJSONObject(i);
+		Assert.assertNotNull(station);
+
+		CFStation newStation = new CFStation();
+		newStation.setName(station.getString("name"));
+		newStation.setX(station.getDouble("st_x"));
+		newStation.setY(station.getDouble("st_y"));
+
+		Assert.assertTrue(stations.add(newStation));
+	    }
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    Assert.fail();
+	}
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: lookup()");
+	return stations;
     }
                 
-    public CFService() {
+    /**
+     * <code>getString</code> extract a/the string from the input stream.
+     *
+     * @param is an <code>InputStream</code> value
+     * @return a <code>String</code> value
+     */
+    private static String getString(final InputStream is) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: getString()");
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+	Assert.assertNotNull(reader);
+        StringBuilder sb = new StringBuilder(); 
+        String line = null;
+        try {
+            while((line = reader.readLine()) != null) {sb.append(line + "\n");}
+        } catch (Exception e) {e.printStackTrace(); Assert.fail();
+        } finally { 
+          try {is.close();} catch(Exception e) {e.printStackTrace(); Assert.fail();}
+        }
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: getString()");
+        return sb.toString();
     }
 }

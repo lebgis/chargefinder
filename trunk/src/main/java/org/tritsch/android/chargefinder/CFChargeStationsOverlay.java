@@ -16,40 +16,60 @@
 
 package org.tritsch.android.chargefinder;
 
-import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.OverlayItem;
-import com.google.android.maps.GeoPoint;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.OverlayItem;
 
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.Assert;
 
+/**
+ * <code>CFChargeStationsOverlay</code> loads all of the charge stations
+ * that are with in a radius of range*TRITSCH_FACTOR.
+ *
+ * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
+ * @version $Id$
+ */
 public class CFChargeStationsOverlay extends ItemizedOverlay {
     private static final String TAG = "CFChargeStationsOverlay";
 
-    private ArrayList<OverlayItem> stations = new ArrayList<OverlayItem>();
-    private Context mContext;
+    // based on hermann's calculation, this is the factor that we need to apply
+    // in germany to convert to go from GeoPoints to meters 
+    private static final double SAUER_FACTOR = 64.774831883062347;
 
+    // herman got a factor, so i wanted to have one too :). it determines
+    // how much bigger the radius is to the range
+    private static final int TRITSCH_FACTOR = 2;
+
+    private ArrayList<OverlayItem> stations = new ArrayList<OverlayItem>();
+    private Context context = null;
+
+    /**
+     * Creates a new <code>CFChargeStationsOverlay</code> instance.
+     *
+     * @param defaultMarker a <code>Drawable</code> value
+     * @param context a <code>Context</code> value
+     */
     public CFChargeStationsOverlay(Drawable defaultMarker, Context context) {
         super(boundCenterBottom(defaultMarker));
-        mContext = context;
-        Assert.assertNotNull(mContext);
-    }
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: CFChargeStationsOverlay()");
 
-    public void addOverlay(OverlayItem station) {
-        stations.add(station);
-        populate();
+        this.context = context;
+        Assert.assertNotNull(this.context);
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: CFChargeStationsOverlay()");
     }
 
     @Override
-    protected OverlayItem createItem(int i) {
+    protected OverlayItem createItem(final int i) {
         return stations.get(i);
     }
 
@@ -59,33 +79,70 @@ public class CFChargeStationsOverlay extends ItemizedOverlay {
     }
 
     @Override
-    protected boolean onTap(int i) {
+    protected boolean onTap(final int i) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: onTap()");
+
         OverlayItem item = stations.get(i);
         Assert.assertNotNull(item);
-        Toast.makeText(mContext, "" + item.getSnippet() + "(" + item.getTitle() + ")", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, item.getSnippet() + " - (" + item.getTitle() + ")", Toast.LENGTH_LONG).show();
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: onTap()");
         return true;
     }
 
-    public void update(GeoPoint location, int range) {
-        String point_x = Double.toString(((double) location.getLatitudeE6()) / 1E6);
-        String point_y = Double.toString(((double) location.getLongitudeE6()) / 1E6);
-        String radius = Double.toString((range / 64.774831883062347 / 1000)*2);
+    /**
+     * <code>addStation</code> add a station to the list
+     * of stations that will be displayed.
+     *
+     * @param station an <code>OverlayItem</code> value
+     */
+    public void addStation(final OverlayItem station) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: addStation()");
 
-        CFService service = new CFService();
-        List<Station> stations = service.lookup(point_y, point_x, radius);
+        stations.add(station);
+        populate();
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: addStation()");
+	return;
+    }
+
+    /**
+     * <code>update</code> the ChargeStationsOverlay by finding all stations that
+     * within a radius of range*TRITSCH_FACTOR around a given location, add these 
+     * stations to the over lay and finally display these stations on the map.
+     *
+     * @param location a <code>GeoPoint</code> value
+     * @param range an <code>int</code> value
+     */
+    public void update(final GeoPoint location, final int range) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: update()");
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Location: " + location.toString());
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range: " + range);
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "converting the parameters into strings ...");
+        String point_x = Double.toString(((double) location.getLongitudeE6()) / 1E6);
+        String point_y = Double.toString(((double) location.getLatitudeE6()) / 1E6);
+        String radius = Double.toString((range / SAUER_FACTOR / 1000)*TRITSCH_FACTOR);
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "lookup the new set of stations ...");
+        List<CFStation> stations = CFService.lookup(point_x, point_y, radius);
         Assert.assertNotNull(stations);
-        Iterator<Station> i = stations.iterator();
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "putting " + stations.size() + " stations on the map ...");
+        Iterator<CFStation> i = stations.iterator();
         while(i.hasNext()) {
-            Station station = i.next();
+            CFStation station = i.next();
             try {            
-                GeoPoint stationPoint = new GeoPoint((int) (station.y * 1E6), (int) (station.x * 1E6));
-                OverlayItem stationOverlayItem = new OverlayItem(stationPoint, stationPoint.toString(), station.name);
-                addOverlay(stationOverlayItem);
+                GeoPoint stationPoint = new GeoPoint((int) (station.getY() * 1E6), (int) (station.getX() * 1E6));
+                OverlayItem stationOverlayItem = new OverlayItem(stationPoint, stationPoint.toString(), station.getName());
+                addStation(stationOverlayItem);
             } catch (Exception e) {
                 e.printStackTrace();
                 Assert.fail();
             }
         }
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: update()");
         return;
     }
 }
