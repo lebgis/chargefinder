@@ -19,10 +19,13 @@
     <string name="lookup">Lookup</string>
     <string name="about">About</string>
     <string name="about_title">About ChargeFinder</string>
-    <string name="about_message">ChargeFinder V1.0\n\n(c) Roland Tritsch 2010\nSponsored by HP Germany</string>
+    <string name="about_message">ChargeFinder V1.2\n\n(c) Roland Tritsch 2010\nroland@tritsch.org\n\nSponsored by HP Germany/nhermann.sauer@hp.com</string>
     <string name="alert_dialog_lookup_title">Enter Address/Range</string>
     <string name="alert_dialog_lookup_address">Address</string>
     <string name="alert_dialog_lookup_range">Range</string>
     <string name="alert_dialog_ok">OK</string>
     <string name="alert_dialog_cancel">Cancel</string>
+    <string name="default_address">Eichendorff Weg 2, Eltville 65343, Germany</string>
+    <string name="default_range">10000</string>
+    <string name="default_zoom_level">10</string>
 </resources>

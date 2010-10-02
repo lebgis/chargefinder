@@ -16,52 +16,81 @@
 
 package org.tritsch.android.chargefinder;
 
-import com.google.android.maps.Overlay;
-import com.google.android.maps.MapView;
-import com.google.android.maps.Projection;
-import com.google.android.maps.GeoPoint;
-
-import android.graphics.Paint;
 import android.graphics.Canvas;
+import android.graphics.Paint.Style;
+import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 
 import android.util.Log;
+
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.Projection;
+
 import junit.framework.Assert;
 
+/**
+ * <code>CFRangeOverlay</code> draws a circle on the screen/map
+ * to indicate the range of the car.
+ *
+ * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
+ * @version $Id$
+ */
 public class CFRangeOverlay extends Overlay {
     private static final String TAG = "CFRangeOverlay";
     
     private Paint circlePaint = new Paint();
     private Paint borderPaint = new Paint();
 
-    private int range = 10000;
+    private int range = 0;
 
     public CFRangeOverlay() {
-        circlePaint.setARGB(64, 75, 75, 75);
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: CFRangeOverlay()");
 
-        borderPaint.setARGB(255, 255, 255, 255);
+        circlePaint.setARGB(64, 75, 75, 75); // light grey
+
+        borderPaint.setARGB(255, 255, 255, 255); // white
         borderPaint.setAntiAlias(true);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(5);
-    }
 
-    public void setRange(int range) {
-        this.range = range;
-        return;
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: CFRangeOverlay()");
     }
 
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: draw()");
+
         GeoPoint center = mapView.getMapCenter();
+	Assert.assertNotNull(center);
         Projection projection = mapView.getProjection();
+	Assert.assertNotNull(projection);
         Point p = projection.toPixels(center, null);
+	Assert.assertNotNull(p);
         float radius = projection.metersToEquatorPixels(range);
 
         canvas.drawCircle(p.x, p.y, radius, circlePaint);
         canvas.drawCircle(p.x, p.y, radius, borderPaint);
 
         super.draw(canvas, mapView, shadow);
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: draw()");
+        return;
+    }
+
+    /**
+     * <code>setRange</code> sets the range of the car.
+     *
+     * @param range an <code>int</code> value
+     */
+    public void setRange(final int range) {
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: setRange()");
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range:" + range);
+
+        this.range = range;
+
+	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: setRange()");
         return;
     }
 }

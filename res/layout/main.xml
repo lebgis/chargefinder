@@ -26,14 +26,15 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       android:clickable="true"
-      android:apiKey="0qoffFmZTDoefMaRgZx8rvpbLlBt26HHLstCGkg"
+      android:apiKey="0qoffFmZTDoeWcWZtCnJ2N56_TLpvQ5PUl2IRCA"
       />
-
+<!--
   <LinearLayout 
       android:id="@+id/zoomview" 
       android:layout_width="wrap_content" 
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true" 
       android:layout_centerHorizontal="true" 
-      /> 
+      />
+-->
 </RelativeLayout>
