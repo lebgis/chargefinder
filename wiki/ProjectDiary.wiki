@@ -3,6 +3,10 @@
 
 = Project Diary =
 
+== 05. Oct 2010 ==
+
+  * Used UMLGrap to generate a/the UML Diagram
+
 == 01. Oct 2010 ==
 
   * Just checked in ChargeFinder 1.2.0
