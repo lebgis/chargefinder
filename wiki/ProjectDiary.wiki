@@ -1,0 +1,12 @@
+#summary A wiki page to keep people informed about what is going on.
+#labels Featured
+
+= Project Diary =
+
+== 01. Oct 2010 ==
+
+* Just checked in ChargeFinder 1.2.0
+* Cleaned up the code a little bit
+* Added logging again (closed the issue)
+* Added JAVADOC comments
+* Updated the About Box :)
