@@ -16,7 +16,6 @@
 
 package org.tritsch.android.chargefinder;
 
-import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
 
 import android.content.DialogInterface;
@@ -40,9 +39,7 @@ import android.widget.EditText;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 
 import java.util.List;
 import java.util.Locale;
@@ -56,15 +53,38 @@ import junit.framework.Assert;
  *
  * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
  * @version $Id$
+ *
+ * @composed 1 - 1 MapView
+ * @composed 1 - 1 CFChargeStationsOverlay
+ * @composed 1 - 1 CFRangeOverlay
  */
 
-public class CFMain extends MapActivity {
+public final class CFMain extends MapActivity {
     private static final String TAG = "CFMain";
 
+    /**
+     * <code>GEOPOINT_FACTOR</code> is used to convert from/to Long/Latitude.
+     */
+    protected static final double GEOPOINT_FACTOR = 1E6;
+
+    /**
+     * <code>mapView</code> shows the map on screen.
+     */
     private MapView mapView;
+
+    /**
+     * <code>stationsOverlay</code> show all stations on the map.
+     */
     private CFChargeStationsOverlay stationsOverlay;
+
+    /**
+     * <code>rangeOverlay</code> shows the range of the car on the map (as a grey circle).
+     */
     private CFRangeOverlay rangeOverlay;
 
+    /**
+     * Creates a new <code>CFMain</code> instance.
+     */
     public CFMain() {
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: CFMain()");
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: CFMain()");
@@ -78,10 +98,10 @@ public class CFMain extends MapActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: onCreate()");
         super.onCreate(savedInstanceState);
-        
+
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "associate this activity with a/the (main) view");
         this.setContentView(R.layout.main);
  
@@ -91,24 +111,24 @@ public class CFMain extends MapActivity {
         mapView.setBuiltInZoomControls(true);
 
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "get and translate the default address into a location and get the default range");
-        GeoPoint default_location = getLocationFromAddress(getResources().getString(R.string.default_address));
-        Assert.assertNotNull(default_location);
-        int default_range = Integer.parseInt(getResources().getString(R.string.default_range));
+        GeoPoint defaultLocation = getLocationFromAddress(getResources().getString(R.string.default_address));
+        Assert.assertNotNull(defaultLocation);
+        int defaultRange = Integer.parseInt(getResources().getString(R.string.default_range));
 
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create an overlay with all the charging stations on it that are within a range from the location and display it");
         Drawable stationMarker = getResources().getDrawable(R.drawable.plug_tiny_red);
         Assert.assertNotNull(stationMarker);
         stationsOverlay = new CFChargeStationsOverlay(stationMarker, this);
         mapView.getOverlays().add(stationsOverlay);
-        stationsOverlay.update(default_location, default_range);
+        stationsOverlay.update(defaultLocation, defaultRange);
 
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create the range overlay (a transparent grey cricle) and display it");
         rangeOverlay = new CFRangeOverlay();
-        rangeOverlay.setRange(default_range);
+        rangeOverlay.setRange(defaultRange);
         mapView.getOverlays().add(rangeOverlay);
 
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "make the map move to the default location");
-        mapView.getController().animateTo(default_location);
+        mapView.getController().animateTo(defaultLocation);
         mapView.getController().setZoom(Integer.parseInt(getResources().getString(R.string.default_zoom_level))); 
         mapView.invalidate();
 
@@ -117,7 +137,7 @@ public class CFMain extends MapActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: onCreateOptionsMenu()");
 
         MenuInflater inflater = getMenuInflater();
@@ -129,7 +149,7 @@ public class CFMain extends MapActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: onOptionsItemSelected()");
 
         boolean done = false;
@@ -172,7 +192,7 @@ public class CFMain extends MapActivity {
         lookup.setView(textEntryView);
 
         lookup.setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(final DialogInterface dialog, final int whichButton) {
                 if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: showDialogLookup.positiveButton.onClick()");
 
                 if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "access the text fields to read the values");
@@ -202,7 +222,7 @@ public class CFMain extends MapActivity {
             }
         });
         lookup.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+            public void onClick(final DialogInterface dialog, final int whichButton) {
                 if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: showDialogLookup.negativeButton.onClick()");
                 if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: showDialogLookup.negativeButton.onClick()");
             }
@@ -216,7 +236,7 @@ public class CFMain extends MapActivity {
     }
 
     /**
-     * <code>showDialogAbout</code> just builds the About Dialog.
+     * <code>showDialogAbout</code> builds and shows the About Dialog.
      */
     private void showDialogAbout() {
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: showDialogAbout()");
@@ -252,7 +272,7 @@ public class CFMain extends MapActivity {
         if(addresses.size() == 0) return null;
 
         Assert.assertTrue(addresses.size() == 1);
-        GeoPoint location = new GeoPoint((int) (addresses.get(0).getLatitude() * 1E6), (int) (addresses.get(0).getLongitude() * 1E6));
+        GeoPoint location = new GeoPoint((int) (addresses.get(0).getLatitude() * GEOPOINT_FACTOR), (int) (addresses.get(0).getLongitude() * GEOPOINT_FACTOR));
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Location: " + location.toString());
 
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: getLocationFromAddress()");
