@@ -41,16 +41,32 @@ import org.json.JSONObject;
  *
  * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
  * @version $Id$
+ *
+ * @depend 1 - 1 CFStation
+ * @depend 1 - 1 HttpClient
+ * @depend 1 - 1 HttpResponse
  */
-public class CFService {
+public final class CFService {
     private static final String TAG = "CFService";
     private static final String BASE_URL = "http://chargefinder.tritsch.org/stations.php";
 
-    // this is a static class. no instances are allowed.
+    /**
+     * Does not creates a new <code>CFService</code> instance.
+     */
     private CFService() {
     }
 
-    public static List<CFStation> lookup(final String point_x, final String point_y, final String radius) {
+    /**
+     * <code>lockup<code> will contact the chargefinder service and will retrieve
+     * a/the list of stations described by the parameters.
+     *
+     * @param pointX - x coordinates to start the search from
+     * @param pointY - y coordinates to start the search from
+     * @param radius - the radius from x, y to include in the search
+     *
+     * @return a/the list of stations that are within the radius
+     */
+    public static List<CFStation> lookup(final String pointX, final String pointY, final String radius) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: lookup()");
 
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create the list we will return ...");
@@ -60,7 +76,7 @@ public class CFService {
         HttpClient httpClient = new DefaultHttpClient();
 	Assert.assertNotNull(httpClient);
 
-	String url = "" + BASE_URL + "?point_x=" + point_x + "&point_y=" + point_y + "&radius=" + radius;
+	String url = "" + BASE_URL + "?point_x=" + pointX + "&point_y=" + pointY + "&radius=" + radius;
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "URL:" + url);
 
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "go and do it ...");
@@ -129,10 +145,18 @@ public class CFService {
         StringBuilder sb = new StringBuilder(); 
         String line = null;
         try {
-            while((line = reader.readLine()) != null) {sb.append(line + "\n");}
-        } catch (Exception e) {e.printStackTrace(); Assert.fail();
+            while((line = reader.readLine()) != null) {
+                sb.append(line + "\n"); 
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); Assert.fail();
         } finally { 
-          try {is.close();} catch(Exception e) {e.printStackTrace(); Assert.fail();}
+            try {
+		is.close(); 
+	    } catch(Exception e) {
+		e.printStackTrace(); 
+		Assert.fail(); 
+	    }
         }
 
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: getString()");

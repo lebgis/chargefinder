@@ -17,7 +17,6 @@
 package org.tritsch.android.chargefinder;
 
 import android.graphics.Canvas;
-import android.graphics.Paint.Style;
 import android.graphics.Paint;
 import android.graphics.Point;
 
@@ -36,30 +35,41 @@ import junit.framework.Assert;
  *
  * @author <a href="mailto:roland@tritsch.org">Roland Tritsch</a>
  * @version $Id$
+ *
+ * @depend 1 - 1 Mapview
  */
-public class CFRangeOverlay extends Overlay {
+public final class CFRangeOverlay extends Overlay {
     private static final String TAG = "CFRangeOverlay";
+
+    private static final int LIGHT = 64;
+    private static final int GREY = 75;
+    private static final int WHITE = 255;
+    private static final int WIDTH = 5;
     
     private Paint circlePaint = new Paint();
     private Paint borderPaint = new Paint();
 
     private int range = 0;
 
+    /**
+     * Creates a new <code>CFRangeOverlay</code> instance.
+     * Sets the circle paint to light grey and the border paint to white.
+     */
     public CFRangeOverlay() {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: CFRangeOverlay()");
 
-        circlePaint.setARGB(64, 75, 75, 75); // light grey
+        circlePaint.setARGB(LIGHT, GREY, GREY, GREY);
 
-        borderPaint.setARGB(255, 255, 255, 255); // white
+        borderPaint.setARGB(WHITE, WHITE, WHITE, WHITE);
         borderPaint.setAntiAlias(true);
         borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(5);
+        borderPaint.setStrokeWidth(WIDTH);
 
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: CFRangeOverlay()");
     }
 
     @Override
-    public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+    public void draw(final Canvas canvas, final MapView mapView, final boolean shadow) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: draw()");
 
         GeoPoint center = mapView.getMapCenter();
@@ -84,11 +94,11 @@ public class CFRangeOverlay extends Overlay {
      *
      * @param range an <code>int</code> value
      */
-    public void setRange(final int range) {
+    public void setRange(final int r) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: setRange()");
-	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range:" + range);
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range:" + r);
 
-        this.range = range;
+        this.range = r;
 
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: setRange()");
         return;

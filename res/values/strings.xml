@@ -19,7 +19,7 @@
     <string name="lookup">Lookup</string>
     <string name="about">About</string>
     <string name="about_title">About ChargeFinder</string>
-    <string name="about_message">ChargeFinder V1.2\n\n(c) Roland Tritsch 2010\nroland@tritsch.org\n\nSponsored by HP Germany/nhermann.sauer@hp.com</string>
+    <string name="about_message">ChargeFinder V1.2\n\n(c) Roland Tritsch 2010\nroland@tritsch.org\n\nSponsored by HP Germany\nhermann.sauer@hp.com</string>
     <string name="alert_dialog_lookup_title">Enter Address/Range</string>
     <string name="alert_dialog_lookup_address">Address</string>
     <string name="alert_dialog_lookup_range">Range</string>

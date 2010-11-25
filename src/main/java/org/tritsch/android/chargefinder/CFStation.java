@@ -24,7 +24,7 @@ package org.tritsch.android.chargefinder;
  * @version $Id$
  */
 
-public class CFStation {
+public final class CFStation {
     /**
      * The name of the charging station.
      */
@@ -45,7 +45,7 @@ public class CFStation {
      *
      * @return a <code>String</code> value
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
 
@@ -55,7 +55,7 @@ public class CFStation {
      * @param newName The new Name value.
      */
 
-    public final void setName(final String newName) {
+    public void setName(final String newName) {
         this.name = newName;
     }
 
@@ -64,7 +64,7 @@ public class CFStation {
      *
      * @return a <code>double</code> value
      */
-    public final double getX() {
+    public double getX() {
         return x;
     }
 
@@ -73,7 +73,7 @@ public class CFStation {
      *
      * @param newX The new X value.
      */
-    public final void setX(final double newX) {
+    public void setX(final double newX) {
         this.x = newX;
     }
 
@@ -82,7 +82,7 @@ public class CFStation {
      *
      * @return a <code>double</code> value
      */
-    public final double getY() {
+    public double getY() {
         return y;
     }
 
@@ -91,7 +91,7 @@ public class CFStation {
      *
      * @param newY The new Y value.
      */
-    public final void setY(final double newY) {
+    public void setY(final double newY) {
         this.y = newY;
     }
 }
