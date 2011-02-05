@@ -23,11 +23,11 @@ limitations under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.tritsch.android.chargefinder</groupId>
-  <artifactId>CFMain</artifactId>
+  <artifactId>ChargeFinder</artifactId>
   <packaging>apk</packaging>
-  <version>V1.2.0</version>
+  <version>V1.3.0-rev10</version>
 
-  <name>Android SDK ${env.ANDROID_VERSION} - ChargeFinder ${version}</name>
+  <name>${project.artifactId}-${project.version}-${env.ANDROID_VERSION}-${env.ANDROID_API_VERSION}</name>
 
   <dependencies>
     <dependency>
@@ -45,14 +45,14 @@ limitations under the License.
   </dependencies>
 
   <build>
-    <finalName>${project.artifactId}-${project.version}</finalName>
+    <finalName>${project.name}</finalName>
     <sourceDirectory>src</sourceDirectory>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>maven-android-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>2.8.3</version>
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -60,7 +60,7 @@ limitations under the License.
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>2.3.2</version>
         </plugin>
         <plugin>
           <artifactId>maven-enforcer-plugin</artifactId>
@@ -146,7 +146,6 @@ limitations under the License.
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
         <artifactId>maven-android-plugin</artifactId>
-        <version>2.5.1</version>
         <configuration>
           <sdk>
             <platform>${env.ANDROID_PLATFORM}</platform>
@@ -158,10 +157,6 @@ limitations under the License.
           <undeployBeforeDeploy>true</undeployBeforeDeploy>
         </configuration>
         <extensions>true</extensions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3</version>
       </plugin>
     </plugins>
   </build>

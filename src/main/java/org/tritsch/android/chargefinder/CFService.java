@@ -68,6 +68,13 @@ public final class CFService {
      */
     public static List<CFStation> lookup(final String pointX, final String pointY, final String radius) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: lookup()");
+	Assert.assertNotNull(pointX); Assert.assertFalse(pointX.length() == 0);
+	Assert.assertNotNull(pointY); Assert.assertFalse(pointY.length() == 0);
+	Assert.assertNotNull(radius); Assert.assertFalse(radius.length() == 0);
+
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "pointX:" + pointX);
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "pointY:" + pointY);
+	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "radius:" + radius);
 
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "create the list we will return ...");
         List<CFStation> stations = new ArrayList<CFStation>();
@@ -139,6 +146,7 @@ public final class CFService {
      */
     private static String getString(final InputStream is) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: getString()");
+	Assert.assertNotNull(is);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 	Assert.assertNotNull(reader);

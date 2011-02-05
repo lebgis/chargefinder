@@ -79,9 +79,10 @@ public final class CFChargeStationsOverlay extends ItemizedOverlay {
     public CFChargeStationsOverlay(final Drawable defaultMarker, final Context ctx) {
         super(boundCenterBottom(defaultMarker));
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: CFChargeStationsOverlay()");
+	Assert.assertNotNull(defaultMarker);
+        Assert.assertNotNull(ctx);
 
         this.context = ctx;
-        Assert.assertNotNull(this.context);
 
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Leave: CFChargeStationsOverlay()");
     }
@@ -116,6 +117,7 @@ public final class CFChargeStationsOverlay extends ItemizedOverlay {
      */
     public void addStation(final OverlayItem station) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: addStation()");
+	Assert.assertNotNull(station);
 
         stations.add(station);
         populate();
@@ -134,6 +136,9 @@ public final class CFChargeStationsOverlay extends ItemizedOverlay {
      */
     public void update(final GeoPoint location, final int range) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: update()");
+	Assert.assertNotNull(location);
+	Assert.assertTrue(range > 0);
+
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Location: " + location.toString());
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range: " + range);
 
