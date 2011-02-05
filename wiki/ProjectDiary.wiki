@@ -3,6 +3,17 @@
 
 = Project Diary =
 
+== 05. Feb 2011 ==
+
+  * Just checked in ChargeFinder 1.3.0
+  * Cleaned up the POM
+    * Made sure you can build against different platforms
+  * Cleaned up the source code (again)
+    * Added more asserts
+  * Restructured the menu layout
+    * To allow to set the range and the address seperately
+  * Added the lookup contacts functionality
+
 == 05. Oct 2010 ==
 
   * Used UMLGrap to generate a/the UML Diagram
