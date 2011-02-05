@@ -15,10 +15,16 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/lookup"
+    <item android:id="@+id/menu_lookup_address"
           android:icon="@drawable/plug_tiny_gray"
-          android:title="@string/lookup"/>
-    <item android:id="@+id/about"
+          android:title="@string/menu_lookup_address"/>
+    <item android:id="@+id/menu_set_address"
           android:icon="@drawable/plug_tiny_gray"
-          android:title="@string/about"/>
+          android:title="@string/menu_set_address"/>
+    <item android:id="@+id/menu_set_range"
+          android:icon="@drawable/plug_tiny_gray"
+          android:title="@string/menu_set_range"/>
+    <item android:id="@+id/menu_show_about"
+          android:icon="@drawable/plug_tiny_gray"
+          android:title="@string/menu_show_about"/>
 </menu>

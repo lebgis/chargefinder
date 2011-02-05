@@ -16,6 +16,8 @@
 
 package org.tritsch.android.chargefinder;
 
+import junit.framework.Assert;
+
 /**
  * <code>CFStation</code> is just a small helper class to describe
  * a charging station.
@@ -56,6 +58,7 @@ public final class CFStation {
      */
 
     public void setName(final String newName) {
+	Assert.assertNotNull(newName); Assert.assertFalse(newName.length() == 0);
         this.name = newName;
     }
 

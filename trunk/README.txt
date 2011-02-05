@@ -33,7 +33,7 @@ http://maven.apache.org/download.html
 
 5. Run mvn install to build application
 
-6. Run setup_avd.sh to create avd for emulator
+6. Run android list target to find the suitable target. Edit and run setup_avd.sh to create avd for emulator
 
 7. Run emulator -verbose -avd AVD_${ANDROID_VERSION}-${ANDROID_API_VERSION}
 

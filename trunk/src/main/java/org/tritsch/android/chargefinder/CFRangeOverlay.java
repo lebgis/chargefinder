@@ -71,6 +71,8 @@ public final class CFRangeOverlay extends Overlay {
     @Override
     public void draw(final Canvas canvas, final MapView mapView, final boolean shadow) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: draw()");
+	Assert.assertNotNull(canvas);
+	Assert.assertNotNull(mapView);
 
         GeoPoint center = mapView.getMapCenter();
 	Assert.assertNotNull(center);
@@ -96,6 +98,8 @@ public final class CFRangeOverlay extends Overlay {
      */
     public void setRange(final int r) {
 	if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: setRange()");
+	Assert.assertTrue(r > 0);
+
 	if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Range:" + r);
 
         this.range = r;
