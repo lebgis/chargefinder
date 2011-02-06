@@ -30,7 +30,7 @@
     <string name="alert_dialog_cancel">Cancel</string>
 
     <string name="about_title">About ChargeFinder</string>
-    <string name="about_message">ChargeFinder V1.3.0\n\n(c) Roland Tritsch 2011\nroland@tritsch.org\n\nSponsored by HP Germany\nhermann.sauer@hp.com</string>
+    <string name="about_message">ChargeFinder V1.3.1\n\n(c) Roland Tritsch 2011\nroland@tritsch.org\n\nSponsored by HP Germany\nhermann.sauer@hp.com</string>
 
     <string name="query_no_address_found">Contact has no address!</string>
     <string name="query_street_missing">Contact address needs a street!</string>
