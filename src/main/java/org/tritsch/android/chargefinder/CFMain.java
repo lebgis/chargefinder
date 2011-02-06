@@ -225,8 +225,15 @@ public final class CFMain extends MapActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {  
         if(Log.isLoggable(TAG, Log.DEBUG)) Log.d(TAG, "Enter: onActivityResult()");
+
+        if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "right now the only activity result we expect is CONTACT_PICKER_RESULT...");
 	Assert.assertTrue(requestCode == CONTACT_PICKER_RESULT);
-	Assert.assertTrue(resultCode == Activity.RESULT_OK);
+
+        if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "check if the pick was executed ...");
+	if(resultCode != Activity.RESULT_OK) {
+            if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "otherwise ... do nothing!");
+	    return;
+	}
 	Assert.assertNotNull(data);
         if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Result:" + data.toString());
 
@@ -245,34 +252,11 @@ public final class CFMain extends MapActivity {
 	for (String c: queryResultColumns) {
 	    if(Log.isLoggable(TAG, Log.VERBOSE)) Log.v(TAG, "Query Result - Column:" + c);
 	}
-
 	if(queryResultCursor.getCount() == 0) {
 	    Toast.makeText(getApplicationContext(), getResources().getString(R.string.query_no_address_found), Toast.LENGTH_SHORT).show();
 	    return;
 	}
 	Assert.assertTrue(queryResultCursor.moveToFirst());
-	/* 
-	final String queryResultAddressStreet = queryResultCursor.getString(queryResultCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
-	if(queryResultAddressStreet == null) {
-	    Toast.makeText(getApplicationContext(), getResources().getString(R.string.query_street_missing), Toast.LENGTH_SHORT).show();
-	    return;
-	}
-	Assert.assertNotNull(queryResultAddressStreet);
-	final String queryResultAddressCity = queryResultCursor.getString(queryResultCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
-	if(queryResultAddressCity == null) {
-	    Toast.makeText(getApplicationContext(), getResources().getString(R.string.query_city_missing), Toast.LENGTH_SHORT).show();
-	    return;
-	}
-	Assert.assertNotNull(queryResultAddressCity);
-	final String queryResultAddressCountry = queryResultCursor.getString(queryResultCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
-	if(queryResultAddressCountry == null) {
-	    Toast.makeText(getApplicationContext(), getResources().getString(R.string.query_country_missing), Toast.LENGTH_SHORT).show();
-	    return;
-	}
-	Assert.assertNotNull(queryResultAddressCity);
-	final String queryResultAddressString = queryResultAddressStreet + "," + queryResultAddressCity + "," + queryResultAddressCountry;
-	*/
-	// final String queryResultAddressString = queryResultCursor.getString(queryResultCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS));
 	final String queryResultAddressString = queryResultCursor.getString(0);
 	if(queryResultAddressString == null) {
 	    Toast.makeText(getApplicationContext(), getResources().getString(R.string.query_no_address_found), Toast.LENGTH_SHORT).show();
