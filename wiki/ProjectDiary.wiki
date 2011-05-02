@@ -5,7 +5,7 @@
 
 == 02.May 2011 ==
 
-  * Moved the source code to GitHub
+  * Moved the source code to [GitHub|http://github.com/rolandtritsch/ChargeFinder]
 
 == 06.Feb 2011 ==
 
