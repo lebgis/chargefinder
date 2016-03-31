@@ -1,0 +1,1 @@
+ChargeFinder is based on an Postgres/PostGIS backend and find charging stations for e-cars that are within a given range from your current position (or a given position). Right now the range is put in manually, but future enhancements will allow the range to be calculated on the fly.
